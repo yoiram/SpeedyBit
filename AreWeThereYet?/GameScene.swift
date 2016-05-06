@@ -139,8 +139,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //init movement of background
         if gameStarted {
             
-            if bgSpeed < 10 { //to allow slow start
+            if bgSpeed < 9.9 { //to allow slow start
                 bgSpeed += 0.1
+            } else if score > 1000000 {
+                if bgSpeed < 49 {
+                    bgSpeed += 1
+                } else {
+                    bgSpeed = 50
+                }
+            } else if score > 100000 {
+                if bgSpeed < 29.9 {
+                    bgSpeed += 0.1
+                } else {
+                    bgSpeed = 30
+                }
+            } else if score > 10000 {
+                if bgSpeed < 24.9 {
+                    bgSpeed += 0.1
+                } else {
+                    bgSpeed = 25
+                }
+            } else if score > 5000 {
+                if bgSpeed < 19.9 {
+                    bgSpeed += 0.1
+                } else {
+                    bgSpeed = 20
+                }
+            } else if score > 1000 {
+                if bgSpeed < 14.9 {
+                    bgSpeed += 0.1
+                } else {
+                    bgSpeed = 15
+                }
+            } else {
+                bgSpeed = 10
             }
             
             enumerateChildNodesWithName("background", usingBlock: ({
@@ -155,11 +187,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }))
             
             if (bgSpeed > 10) {
-                score += bgSpeed/10
+                score += bgSpeed/5
             } else {
                 score += 1
             }
-            scoreLabel.text = "Score: \(score)"
+            scoreLabel.text = "Score: \(Int(score))"
         }
     }
     
