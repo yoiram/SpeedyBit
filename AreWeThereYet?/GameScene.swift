@@ -35,6 +35,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var bgSpeed:CGFloat = 0
     let carCategory:UInt32 = 0x1 << 0
     let obstacleCategory:UInt32 = 0x1 << 1
+    var delayBetweenObstacles = 2.0
+    var speedOfMovement = 0.008
+    var gameOverView = SKSpriteNode()
+    
+    var updated1000 = false
+    var updated5000 = false
+    var updated10000 = false
+    var updated50000 = false
+    var updated100000 = false
+    var updated1000000 = false
     
     override init(size: CGSize) {
         super.init(size: size)
@@ -58,12 +68,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreBar.color = SKColor.grayColor()
         scoreBar.position = CGPointMake(self.frame.size.width/2, self.frame.size.height - 15)
         self.addChild(scoreBar)
+        scoreBar.zPosition = 10
         
         scoreLabel.fontSize = 20
         scoreLabel.fontColor = UIColor.blackColor()
         scoreLabel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height - 20)
         scoreLabel.text = "Score: 0"
         self.addChild(scoreLabel)
+        scoreLabel.zPosition = 11
         
         //        highScoreLabel.fontSize = 20
         //        highScoreLabel.position = CGPointMake((self.frame.size.width/6)*5, self.frame.size.height - 20)
@@ -81,15 +93,49 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         car.physicsBody?.collisionBitMask = obstacleCategory
         car.physicsBody?.contactTestBitMask = obstacleCategory
         self.addChild(car)
-        
-        //init obstacles
-        //makeObstacles()
-        
+    }
+    
+    func spawn() {
+        self.removeAllActions()
+        let spawn = SKAction.runBlock({
+            () in self.createObstacles()
+        })
+        let delay = SKAction.waitForDuration(delayBetweenObstacles)
+        let spawnDelay = SKAction.sequence([spawn, delay])
+        let spawnDelayForever = SKAction.repeatActionForever(spawnDelay)
+        let spawnAction = SKAction.sequence([SKAction.waitForDuration(delayBetweenObstacles), spawnDelayForever])
+        self.runAction(spawnAction)
+        let distance = CGFloat(self.frame.height + obstacles.frame.height)
+        let moveObstacles = SKAction.moveByX(0, y: -distance - 50, duration: NSTimeInterval(CGFloat(speedOfMovement) * distance))
+        let removeObstacles = SKAction.removeFromParent()
+        moveAndRemove = SKAction.sequence([moveObstacles,removeObstacles])
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if !gameStarted {
+        if !gameStarted && !crashed {
             gameStarted = true
+            spawn()
+        }
+        else if crashed {
+            let touch = touches.first
+            let touchLocation = touch!.locationInNode(self)
+            crashed = false
+            if gameOverView.containsPoint(touchLocation) {
+                gameOverView.removeFromParent()
+                highScoreLabel.removeFromParent()
+            }
+            self.removeAllChildren()
+            self.removeAllActions()
+            score = 0
+            delayBetweenObstacles = 2.0
+            speedOfMovement = 0.008
+            updated1000 = false
+            updated5000 = false
+            updated10000 = false
+            updated50000 = false
+            updated100000 = false
+            updated1000000 = false
+            createScene()
         }
         else {
             let touch = touches.first
@@ -111,29 +157,108 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    }
-    
     func didBeginContact(contact: SKPhysicsContact) {
+        let firstBody = contact.bodyA
+        let secondBody = contact.bodyB
+        
+        if firstBody.categoryBitMask == carCategory && secondBody.categoryBitMask == obstacleCategory || firstBody.categoryBitMask == obstacleCategory && secondBody.categoryBitMask == carCategory {
+            self.removeAllActions()
+            enumerateChildNodesWithName("obstacles", usingBlock: ({
+               (node, error) in
+                node.speed = 0
+                self.removeAllActions()
+            }))
+            gameOver()
+        }
     }
     
-//    func gameOver() {
-//        if CGFloat(defaults.floatForKey(scoreKey.highScore)) < score {
-//            defaults.setValue(score, forKey: scoreKey.highScore)
-//        }
-//        
-//        let gameOverView = SKSpriteNode(color: UIColor.yellowColor(), size: CGSize(width: self.frame.width/2 + self.frame.width/3, height: self.frame.height/3))
-//        gameOverView.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
-//        
-//        highScoreLabel.fontSize = 20
-//        highScoreLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - 10)
-//        highScoreLabel.fontColor = UIColor.blackColor()
-//        highScoreLabel.text = "Highest: \(defaults.integerForKey(scoreKey.highScore))"
-//        gameOverView.setScale(0)
-//        self.addChild(gameOverView)
-//        gameOverView.runAction(SKAction.scaleTo(1.0, duration: 0.2))
-//        self.addChild(highScoreLabel)
-//    }
+    func gameOver() {
+        gameStarted = false
+        crashed = true
+        
+        if defaults.integerForKey(scoreKey.highScore) < Int(score) {
+            defaults.setValue(Int(score), forKey: scoreKey.highScore)
+        }
+        
+        gameOverView = SKSpriteNode(color: UIColor.yellowColor(), size: CGSize(width: self.frame.width/2 + self.frame.width/3, height: self.frame.height/3))
+        gameOverView.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
+        
+        highScoreLabel.fontSize = 30
+        highScoreLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - 10)
+        highScoreLabel.fontColor = UIColor.blackColor()
+        highScoreLabel.text = "Highest: \(defaults.integerForKey(scoreKey.highScore))"
+        gameOverView.setScale(0)
+        self.addChild(gameOverView)
+        gameOverView.runAction(SKAction.scaleTo(1.0, duration: 0.2))
+        self.addChild(highScoreLabel)
+    }
+    
+    func createObstacles() {
+        obstacles = SKNode()
+        obstacles.name = "obstacles"
+        
+        let car1 = SKSpriteNode(imageNamed:"Car")
+        let car2 = SKSpriteNode(imageNamed: "Car")
+        
+        let numObstacles = CGFloat.random(2)
+        
+        let randomPos = CGFloat.random(3)
+        var randomPos2 = CGFloat.random(3)
+        
+        repeat {
+            randomPos2 = CGFloat.random(3)
+        } while randomPos2 == randomPos
+        
+        if numObstacles == 0 { //only one obstacle
+            switch randomPos {
+            case 0: car1.position = CGPoint(x: lanes.firstLane, y: self.frame.height + 25)
+            case 1: car1.position = CGPoint(x: lanes.secondLane, y: self.frame.height + 25)
+            case 2: car1.position = CGPoint(x: lanes.thirdLane, y: self.frame.height + 25)
+            default: break
+            }
+            car1.size = CGSizeMake(80, 80)
+            car1.physicsBody = SKPhysicsBody(rectangleOfSize: car1.size)
+            car1.physicsBody?.affectedByGravity = false
+            car1.physicsBody?.dynamic = false
+            car1.physicsBody?.categoryBitMask = obstacleCategory
+            car1.physicsBody?.collisionBitMask = carCategory
+            car1.physicsBody?.contactTestBitMask = carCategory
+            obstacles.addChild(car1)
+        } else if numObstacles == 1 { //two obstacles
+            switch randomPos {
+            case 0: car1.position = CGPoint(x: lanes.firstLane, y: self.frame.height + 25)
+            case 1: car1.position = CGPoint(x: lanes.secondLane, y: self.frame.height + 25)
+            case 2: car1.position = CGPoint(x: lanes.thirdLane, y: self.frame.height + 25)
+            default: break
+            }
+            car1.size = CGSizeMake(80, 80)
+            car1.physicsBody = SKPhysicsBody(rectangleOfSize: car1.size)
+            car1.physicsBody?.affectedByGravity = false
+            car1.physicsBody?.dynamic = false
+            car1.physicsBody?.categoryBitMask = obstacleCategory
+            car1.physicsBody?.collisionBitMask = carCategory
+            car1.physicsBody?.contactTestBitMask = carCategory
+            switch randomPos2 {
+            case 0: car2.position = CGPoint(x: lanes.firstLane, y: self.frame.height + 25)
+            case 1: car2.position = CGPoint(x: lanes.secondLane, y: self.frame.height + 25)
+            case 2: car2.position = CGPoint(x: lanes.thirdLane, y: self.frame.height + 25)
+            default: break
+            }
+            car2.size = CGSizeMake(80, 80)
+            car2.physicsBody = SKPhysicsBody(rectangleOfSize: car2.size)
+            car2.physicsBody?.affectedByGravity = false
+            car2.physicsBody?.dynamic = false
+            car2.physicsBody?.categoryBitMask = obstacleCategory
+            car2.physicsBody?.collisionBitMask = carCategory
+            car2.physicsBody?.contactTestBitMask = carCategory
+            obstacles.addChild(car1)
+            obstacles.addChild(car2)
+        }
+        
+        obstacles.runAction(moveAndRemove)
+        
+        self.addChild(obstacles)
+    }
     
     override func update(currentTime: CFTimeInterval) {
         //init movement of background
@@ -146,30 +271,72 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     bgSpeed += 1
                 } else {
                     bgSpeed = 50
+                    if !updated1000000 {
+                        updated1000000 = true
+                        speedOfMovement = 0.0005
+                        delayBetweenObstacles = 1.0
+                        spawn()
+                    }
                 }
             } else if score > 100000 {
                 if bgSpeed < 29.9 {
                     bgSpeed += 0.1
                 } else {
                     bgSpeed = 30
+                    if !updated100000 {
+                        updated100000 = true
+                        speedOfMovement = 0.001
+                        delayBetweenObstacles = 1.5
+                        spawn()
+                    }
+                }
+            } else if score > 50000 {
+                if bgSpeed < 24.9 {
+                    bgSpeed += 0.1
+                } else {
+                    bgSpeed = 25
+                    if !updated50000 {
+                        updated50000 = true
+                        speedOfMovement = 0.002
+                        delayBetweenObstacles = 1.6
+                        spawn()
+                    }
                 }
             } else if score > 10000 {
                 if bgSpeed < 24.9 {
                     bgSpeed += 0.1
                 } else {
                     bgSpeed = 25
+                    if !updated10000 {
+                        updated10000 = true
+                        speedOfMovement = 0.003
+                        delayBetweenObstacles = 1.7
+                        spawn()
+                    }
                 }
             } else if score > 5000 {
                 if bgSpeed < 19.9 {
                     bgSpeed += 0.1
                 } else {
                     bgSpeed = 20
+                    if !updated5000 {
+                        updated5000 = true
+                        speedOfMovement = 0.004
+                        delayBetweenObstacles = 1.8
+                        spawn()
+                    }
                 }
             } else if score > 1000 {
                 if bgSpeed < 14.9 {
                     bgSpeed += 0.1
                 } else {
                     bgSpeed = 15
+                    if !updated1000 {
+                        updated1000 = true
+                        speedOfMovement = 0.005
+                        delayBetweenObstacles = 1.9
+                        spawn()
+                    }
                 }
             } else {
                 bgSpeed = 10
@@ -197,5 +364,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+}
+
+private extension CGFloat {
+    static func random(max: Int) -> CGFloat {
+        return CGFloat(arc4random() % UInt32(max))
     }
 }
