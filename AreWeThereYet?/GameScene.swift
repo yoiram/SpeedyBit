@@ -149,9 +149,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let leftSeq = SKAction.sequence([turnLeft,moveLeft,turnRight])
             let rightSeq = SKAction.sequence([turnRight,moveRight,turnLeft])
             
-            if touchLocation.x <= self.frame.width/3 && touchLocation.x > 0 && car.position.x - differenceBetweenLanes > 0 {
+            if touchLocation.x <= car.position.x && touchLocation.x > 0 && car.position.x - differenceBetweenLanes > 0 {
                 car.runAction(leftSeq)
-            } else if touchLocation.x >= self.frame.width/3*2 && touchLocation.x < self.frame.width && car.position.x + differenceBetweenLanes < self.frame.width {
+            } else if touchLocation.x >= car.position.x && touchLocation.x < self.frame.width && car.position.x + differenceBetweenLanes < self.frame.width {
                 car.runAction(rightSeq)
             }
         }
