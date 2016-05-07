@@ -30,6 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var score:CGFloat = 0
     let scoreBar = SKSpriteNode()
     let scoreLabel = SKLabelNode()
+    let scoreLabelGO = SKLabelNode()
     let highScoreLabel = SKLabelNode()
     let defaults = NSUserDefaults.standardUserDefaults()
     var bgSpeed:CGFloat = 0
@@ -71,6 +72,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreBar.zPosition = 10
         
         scoreLabel.fontSize = 20
+        scoreLabel.fontName = "Verdana-Bold"
         scoreLabel.fontColor = UIColor.blackColor()
         scoreLabel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height - 20)
         scoreLabel.text = "Score: 0"
@@ -123,6 +125,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if gameOverView.containsPoint(touchLocation) {
                 gameOverView.removeFromParent()
                 highScoreLabel.removeFromParent()
+                scoreLabelGO.removeFromParent()
             }
             self.removeAllChildren()
             self.removeAllActions()
@@ -183,14 +186,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverView = SKSpriteNode(color: UIColor.yellowColor(), size: CGSize(width: self.frame.width/2 + self.frame.width/3, height: self.frame.height/3))
         gameOverView.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
         
-        highScoreLabel.fontSize = 30
-        highScoreLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - 10)
+        scoreLabelGO.fontSize = 25
+        scoreLabelGO.fontName = "Verdana-Bold"
+        scoreLabelGO.position = CGPointMake(gameOverView.position.x, gameOverView.position.y + 30)
+        scoreLabelGO.fontColor = UIColor.blackColor()
+        scoreLabelGO.text = "Current score: \(Int(score))"
+        scoreLabelGO.setScale(0)
+
+        highScoreLabel.fontSize = 25
+        highScoreLabel.fontName = "Verdana-Bold"
+        highScoreLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - 30)
         highScoreLabel.fontColor = UIColor.blackColor()
         highScoreLabel.text = "Highest: \(defaults.integerForKey(scoreKey.highScore))"
         gameOverView.setScale(0)
+        highScoreLabel.setScale(0)
         self.addChild(gameOverView)
         gameOverView.runAction(SKAction.scaleTo(1.0, duration: 0.2))
         self.addChild(highScoreLabel)
+        highScoreLabel.runAction(SKAction.scaleTo(1.0, duration: 0.2))
+        self.addChild(scoreLabelGO)
+        scoreLabelGO.runAction(SKAction.scaleTo(1.0, duration: 0.2))
     }
     
     func createObstacles() {
