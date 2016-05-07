@@ -89,7 +89,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         car = SKSpriteNode(imageNamed: "Car")
         car.size = CGSizeMake(80, 80)
         car.position = CGPointMake(lanes.secondLane, car.size.height/2 + 20)
-        car.physicsBody = SKPhysicsBody(rectangleOfSize: car.size)
+        car.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 53, height: 80))
         car.physicsBody?.affectedByGravity = false
         car.physicsBody?.categoryBitMask = carCategory
         car.physicsBody?.collisionBitMask = obstacleCategory
@@ -105,7 +105,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let delay = SKAction.waitForDuration(delayBetweenObstacles)
         let spawnDelay = SKAction.sequence([spawn, delay])
         let spawnDelayForever = SKAction.repeatActionForever(spawnDelay)
-        let spawnAction = SKAction.sequence([SKAction.waitForDuration(delayBetweenObstacles), spawnDelayForever])
+        let spawnAction = SKAction.sequence([SKAction.waitForDuration(delayBetweenObstacles+0.4), spawnDelayForever])
         self.runAction(spawnAction)
         let distance = CGFloat(self.frame.height + obstacles.frame.height)
         let moveObstacles = SKAction.moveByX(0, y: -distance - 50, duration: NSTimeInterval(CGFloat(speedOfMovement) * distance))
@@ -191,15 +191,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabelGO.position = CGPointMake(gameOverView.position.x, gameOverView.position.y + 30)
         scoreLabelGO.fontColor = UIColor.blackColor()
         scoreLabelGO.text = "Current score: \(Int(score))"
-        scoreLabelGO.setScale(0)
 
         highScoreLabel.fontSize = 25
         highScoreLabel.fontName = "Verdana-Bold"
         highScoreLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - 30)
         highScoreLabel.fontColor = UIColor.blackColor()
         highScoreLabel.text = "Highest: \(defaults.integerForKey(scoreKey.highScore))"
+        
         gameOverView.setScale(0)
         highScoreLabel.setScale(0)
+        scoreLabelGO.setScale(0)
+        
         self.addChild(gameOverView)
         gameOverView.runAction(SKAction.scaleTo(1.0, duration: 0.2))
         self.addChild(highScoreLabel)
@@ -212,8 +214,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         obstacles = SKNode()
         obstacles.name = "obstacles"
         
-        let car1 = SKSpriteNode(imageNamed:"Car")
-        let car2 = SKSpriteNode(imageNamed: "Car")
+        let car1 = SKSpriteNode(imageNamed:"Car0")
+        let car2 = SKSpriteNode(imageNamed: "Car0")
         
         let numObstacles = CGFloat.random(2)
         
@@ -232,7 +234,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             default: break
             }
             car1.size = CGSizeMake(80, 80)
-            car1.physicsBody = SKPhysicsBody(rectangleOfSize: car1.size)
+            car1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 53, height: 80))
             car1.physicsBody?.affectedByGravity = false
             car1.physicsBody?.dynamic = false
             car1.physicsBody?.categoryBitMask = obstacleCategory
@@ -247,7 +249,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             default: break
             }
             car1.size = CGSizeMake(80, 80)
-            car1.physicsBody = SKPhysicsBody(rectangleOfSize: car1.size)
+            car1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 53, height: 80))
             car1.physicsBody?.affectedByGravity = false
             car1.physicsBody?.dynamic = false
             car1.physicsBody?.categoryBitMask = obstacleCategory
@@ -260,7 +262,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             default: break
             }
             car2.size = CGSizeMake(80, 80)
-            car2.physicsBody = SKPhysicsBody(rectangleOfSize: car2.size)
+            car2.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 53, height: 80))
             car2.physicsBody?.affectedByGravity = false
             car2.physicsBody?.dynamic = false
             car2.physicsBody?.categoryBitMask = obstacleCategory
@@ -278,7 +280,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(currentTime: CFTimeInterval) {
         //init movement of background
         if gameStarted {
-            
             if bgSpeed < 9.9 { //to allow slow start
                 bgSpeed += 0.1
             } else if score > 1000000 {
@@ -289,7 +290,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if !updated1000000 {
                         updated1000000 = true
                         speedOfMovement = 0.0005
-                        delayBetweenObstacles = 1.0
+                        delayBetweenObstacles = 0.2
                         spawn()
                     }
                 }
@@ -301,7 +302,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if !updated100000 {
                         updated100000 = true
                         speedOfMovement = 0.001
-                        delayBetweenObstacles = 1.5
+                        delayBetweenObstacles = 0.4
                         spawn()
                     }
                 }
@@ -313,7 +314,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if !updated50000 {
                         updated50000 = true
                         speedOfMovement = 0.002
-                        delayBetweenObstacles = 1.6
+                        delayBetweenObstacles = 0.6
                         spawn()
                     }
                 }
@@ -325,7 +326,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if !updated10000 {
                         updated10000 = true
                         speedOfMovement = 0.003
-                        delayBetweenObstacles = 1.7
+                        delayBetweenObstacles = 0.8
                         spawn()
                     }
                 }
@@ -337,7 +338,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if !updated5000 {
                         updated5000 = true
                         speedOfMovement = 0.004
-                        delayBetweenObstacles = 1.8
+                        delayBetweenObstacles = 1.2
                         spawn()
                     }
                 }
@@ -349,7 +350,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if !updated1000 {
                         updated1000 = true
                         speedOfMovement = 0.005
-                        delayBetweenObstacles = 1.9
+                        delayBetweenObstacles = 1.6
                         spawn()
                     }
                 }
