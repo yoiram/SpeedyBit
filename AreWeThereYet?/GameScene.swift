@@ -78,15 +78,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.text = "Score: 0"
         self.addChild(scoreLabel)
         scoreLabel.zPosition = 11
-        
-        //        highScoreLabel.fontSize = 20
-        //        highScoreLabel.position = CGPointMake((self.frame.size.width/6)*5, self.frame.size.height - 20)
-        //        highScoreLabel.fontColor = UIColor.blackColor()
-        //        highScoreLabel.text = "Highest: \(defaults.integerForKey(scoreKey.highScore))"
-        //        self.addChild(highScoreLabel)
-        //
+
         //init car
-        car = SKSpriteNode(imageNamed: "Car")
+        car = SKSpriteNode(imageNamed: "Car\(Int(CGFloat.random(6)))")
         car.size = CGSizeMake(80, 80)
         car.position = CGPointMake(lanes.secondLane, car.size.height/2 + 20)
         car.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 53, height: 80))
@@ -108,7 +102,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let spawnAction = SKAction.sequence([SKAction.waitForDuration(delayBetweenObstacles+0.4), spawnDelayForever])
         self.runAction(spawnAction)
         let distance = CGFloat(self.frame.height + obstacles.frame.height)
-        let moveObstacles = SKAction.moveByX(0, y: -distance - 50, duration: NSTimeInterval(CGFloat(speedOfMovement) * distance))
+        let moveObstacles = SKAction.moveByX(0, y: -distance - 100, duration: NSTimeInterval(CGFloat(speedOfMovement) * distance))
         let removeObstacles = SKAction.removeFromParent()
         moveAndRemove = SKAction.sequence([moveObstacles,removeObstacles])
     }
@@ -165,6 +159,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let secondBody = contact.bodyB
         
         if firstBody.categoryBitMask == carCategory && secondBody.categoryBitMask == obstacleCategory || firstBody.categoryBitMask == obstacleCategory && secondBody.categoryBitMask == carCategory {
+            crashed = true
             self.removeAllActions()
             enumerateChildNodesWithName("obstacles", usingBlock: ({
                (node, error) in
@@ -183,7 +178,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             defaults.setValue(Int(score), forKey: scoreKey.highScore)
         }
         
-        gameOverView = SKSpriteNode(color: UIColor.yellowColor(), size: CGSize(width: self.frame.width/2 + self.frame.width/3, height: self.frame.height/3))
+        gameOverView = SKSpriteNode(color: UIColor.grayColor(), size: CGSize(width: self.frame.width/2 + self.frame.width/3, height: self.frame.height/3))
         gameOverView.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
         
         scoreLabelGO.fontSize = 25
@@ -202,10 +197,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         highScoreLabel.setScale(0)
         scoreLabelGO.setScale(0)
         
+        gameOverView.removeFromParent()
         self.addChild(gameOverView)
         gameOverView.runAction(SKAction.scaleTo(1.0, duration: 0.2))
+        highScoreLabel.removeFromParent()
         self.addChild(highScoreLabel)
         highScoreLabel.runAction(SKAction.scaleTo(1.0, duration: 0.2))
+        scoreLabelGO.removeFromParent()
         self.addChild(scoreLabelGO)
         scoreLabelGO.runAction(SKAction.scaleTo(1.0, duration: 0.2))
     }
@@ -214,8 +212,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         obstacles = SKNode()
         obstacles.name = "obstacles"
         
-        let car1 = SKSpriteNode(imageNamed:"Car0")
-        let car2 = SKSpriteNode(imageNamed: "Car0")
+        let randCol1 = Int(CGFloat.random(6))
+        let randCol2 = Int(CGFloat.random(6))
+        
+        let car1 = SKSpriteNode(imageNamed: "Car\(randCol1)")
+        let car2 = SKSpriteNode(imageNamed: "Car\(randCol2)")
         
         let numObstacles = CGFloat.random(2)
         
