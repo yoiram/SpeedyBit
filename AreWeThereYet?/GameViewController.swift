@@ -8,24 +8,27 @@
 
 import UIKit
 import SpriteKit
+//import iAd
 
 class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        //self.canDisplayBannerAds = true
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
+        //let skView = self.originalContentView as! SKView
         let skView = self.view as! SKView
-        
+
         if skView.scene == nil {
 //            skView.showsFPS = true
 //            skView.showsNodeCount = true
             
             let gameScene = GameScene(size: skView.bounds.size)
-            gameScene.scaleMode = .AspectFill
+            gameScene.scaleMode = .Fill
             
             skView.presentScene(gameScene)
         }
