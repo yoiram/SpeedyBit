@@ -40,7 +40,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var delayBetweenObstacles = 2.0
     var speedOfMovement = 0.008
     var gameOverView = SKSpriteNode()
-    
     var updated1000 = false
     var updated5000 = false
     var updated10000 = false
@@ -182,13 +181,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverView = SKSpriteNode(color: UIColor.grayColor(), size: CGSize(width: self.frame.width/2 + self.frame.width/3, height: self.frame.height/3))
         gameOverView.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
         
-        scoreLabelGO.fontSize = 25
+        scoreLabelGO.fontSize = 21
         scoreLabelGO.fontName = "Verdana-Bold"
         scoreLabelGO.position = CGPointMake(gameOverView.position.x, gameOverView.position.y + 30)
         scoreLabelGO.fontColor = UIColor.blackColor()
         scoreLabelGO.text = "Current score: \(Int(score))"
 
-        highScoreLabel.fontSize = 25
+        highScoreLabel.fontSize = 21
         highScoreLabel.fontName = "Verdana-Bold"
         highScoreLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - 30)
         highScoreLabel.fontColor = UIColor.blackColor()
@@ -203,10 +202,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverView.runAction(SKAction.scaleTo(1.0, duration: 0.2))
         highScoreLabel.removeFromParent()
         self.addChild(highScoreLabel)
-        highScoreLabel.runAction(SKAction.scaleTo(1.0, duration: 0.4))
+        highScoreLabel.runAction(SKAction.scaleTo(1.0, duration: 0.6))
         scoreLabelGO.removeFromParent()
         self.addChild(scoreLabelGO)
-        scoreLabelGO.runAction(SKAction.scaleTo(1.0, duration: 0.4))
+        scoreLabelGO.runAction(SKAction.scaleTo(1.0, duration: 0.6))
     }
     
     func mileStone() {
@@ -217,6 +216,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mileStoneLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/5 * 4)
         mileStoneLabel.setScale(0)
         mileStoneLabel.fontColor = UIColor.redColor()
+        mileStoneLabel.zPosition = 20
         let scaleUp = SKAction.scaleTo(1.0, duration: 0.3)
         let rotateRight = SKAction.rotateByAngle(CGFloat(M_PI/12), duration: 0.1)
         let rotateLeft = rotateRight.reversedAction()
