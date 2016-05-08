@@ -32,6 +32,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let scoreLabel = SKLabelNode()
     let scoreLabelGO = SKLabelNode()
     let highScoreLabel = SKLabelNode()
+    var mileStoneLabel = SKLabelNode()
     let defaults = NSUserDefaults.standardUserDefaults()
     var bgSpeed:CGFloat = 0
     let carCategory:UInt32 = 0x1 << 0
@@ -202,10 +203,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverView.runAction(SKAction.scaleTo(1.0, duration: 0.2))
         highScoreLabel.removeFromParent()
         self.addChild(highScoreLabel)
-        highScoreLabel.runAction(SKAction.scaleTo(1.0, duration: 0.2))
+        highScoreLabel.runAction(SKAction.scaleTo(1.0, duration: 0.4))
         scoreLabelGO.removeFromParent()
         self.addChild(scoreLabelGO)
-        scoreLabelGO.runAction(SKAction.scaleTo(1.0, duration: 0.2))
+        scoreLabelGO.runAction(SKAction.scaleTo(1.0, duration: 0.4))
+    }
+    
+    func mileStone() {
+        mileStoneLabel = SKLabelNode()
+        mileStoneLabel.text = "MILESTONE!"
+        mileStoneLabel.fontSize = 40
+        mileStoneLabel.fontName = "MarkerFelt-Thin"
+        mileStoneLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/5 * 4)
+        mileStoneLabel.setScale(0)
+        mileStoneLabel.fontColor = UIColor.redColor()
+        let scaleUp = SKAction.scaleTo(1.0, duration: 0.3)
+        let rotateRight = SKAction.rotateByAngle(CGFloat(M_PI/12), duration: 0.1)
+        let rotateLeft = rotateRight.reversedAction()
+        let rotate = SKAction.rotateByAngle(CGFloat(2*M_PI), duration: 1.0)
+        let scaleDown = SKAction.scaleTo(0, duration: 0.5)
+        let remove = SKAction.removeFromParent()
+        
+        let seq = SKAction.sequence([scaleUp, rotateRight, rotateLeft, rotateLeft, rotateRight, rotate, rotate, scaleDown, remove])
+        self.addChild(mileStoneLabel)
+        mileStoneLabel.runAction(seq)
     }
     
     func createObstacles() {
@@ -292,6 +313,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         updated1000000 = true
                         speedOfMovement = 0.0005
                         delayBetweenObstacles = 0.2
+                        mileStone()
                         spawn()
                     }
                 }
@@ -304,6 +326,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         updated100000 = true
                         speedOfMovement = 0.001
                         delayBetweenObstacles = 0.4
+                        mileStone()
                         spawn()
                     }
                 }
@@ -316,6 +339,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         updated50000 = true
                         speedOfMovement = 0.002
                         delayBetweenObstacles = 0.6
+                        mileStone()
                         spawn()
                     }
                 }
@@ -328,6 +352,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         updated10000 = true
                         speedOfMovement = 0.003
                         delayBetweenObstacles = 0.8
+                        mileStone()
                         spawn()
                     }
                 }
@@ -340,6 +365,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         updated5000 = true
                         speedOfMovement = 0.004
                         delayBetweenObstacles = 1.2
+                        mileStone()
+
                         spawn()
                     }
                 }
@@ -352,6 +379,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         updated1000 = true
                         speedOfMovement = 0.005
                         delayBetweenObstacles = 1.6
+                        mileStone()
                         spawn()
                     }
                 }
