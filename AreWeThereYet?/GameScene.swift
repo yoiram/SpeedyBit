@@ -19,6 +19,10 @@ struct lanes { //struct to store lane x positions
     static let thirdLane = UIScreen.mainScreen().bounds.width / 6 * 5
 }
 
+struct didTutorial { //struct for stored
+    static let bool = "didTutorial"
+}
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //init constants and variables
@@ -33,6 +37,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let scoreLabelGO = SKLabelNode()
     let highScoreLabel = SKLabelNode()
     var mileStoneLabel = SKLabelNode()
+    
+    let tapToStartLabel = SKLabelNode(text: "Tap to Start")
+    let tapToMoveLabel = SKLabelNode(text: "Tap on either side to move")
+    
+    
     let defaults = NSUserDefaults.standardUserDefaults()
     var bgSpeed:CGFloat = 0
     let carCategory:UInt32 = 0x1 << 0
@@ -89,6 +98,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         car.physicsBody?.collisionBitMask = obstacleCategory
         car.physicsBody?.contactTestBitMask = obstacleCategory
         self.addChild(car)
+        
+        tapToStartLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 - 40)
+        tapToStartLabel.fontSize = 40
+        tapToStartLabel.fontName = "MarkerFelt-Thin"
+        tapToStartLabel.setScale(0)
+        tapToStartLabel.fontColor = UIColor.whiteColor()
+        self.addChild(tapToStartLabel)
+        let scaleUp = SKAction.scaleTo(1.0, duration: 0.5)
+        let scaleDown = SKAction.scaleTo(0.9, duration: 0.5)
+        let seq = SKAction.sequence([scaleUp, scaleDown])
+        tapToStartLabel.runAction(SKAction.repeatActionForever(seq))
     }
     
     func spawn() {
@@ -110,6 +130,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if !gameStarted && !crashed {
             gameStarted = true
+            tapToStartLabel.runAction(SKAction.sequence([SKAction.scaleTo(0, duration: 0.5),SKAction.removeFromParent()]))
+            
+            tapToMoveLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 - 40)
+            tapToMoveLabel.fontSize = 32
+            tapToMoveLabel.fontName = "MarkerFelt-Thin"
+            tapToMoveLabel.setScale(0)
+            tapToMoveLabel.fontColor = UIColor.whiteColor()
+            self.addChild(tapToMoveLabel)
+            let scaleUp = SKAction.scaleTo(1.0, duration: 0.5)
+            let scaleDown = SKAction.scaleTo(0.9, duration: 0.5)
+            let seq = SKAction.sequence([scaleUp, scaleDown])
+            tapToMoveLabel.runAction(SKAction.sequence([SKAction.waitForDuration(0.6),SKAction.repeatAction(seq, count: 3), SKAction.scaleTo(0, duration: 0.5),SKAction.removeFromParent()]))
             spawn()
         }
         else if crashed {
@@ -210,7 +242,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func mileStone() {
         mileStoneLabel = SKLabelNode()
-        mileStoneLabel.text = "MILESTONE!"
+        mileStoneLabel.text = "CHECKPOINT!"
         mileStoneLabel.fontSize = 40
         mileStoneLabel.fontName = "MarkerFelt-Thin"
         mileStoneLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/5 * 4)
