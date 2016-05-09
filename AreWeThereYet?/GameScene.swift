@@ -23,6 +23,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //init constants and variables
     var car = SKSpriteNode()
+    var currCarColour = -1
     var obstacles = SKNode()
     var moveAndRemove = SKAction()
     var gameStarted = false
@@ -85,7 +86,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.zPosition = 11
 
         //init car
-        car = SKSpriteNode(imageNamed: "Car\(Int(CGFloat.random(6)))")
+        currCarColour = Int(CGFloat.random(6))
+        car = SKSpriteNode(imageNamed: "Car\(currCarColour)")
         car.size = CGSizeMake(80, 80)
         car.position = CGPointMake(lanes.secondLane, car.size.height/2 + 20)
         car.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 53, height: 80))
@@ -261,8 +263,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         obstacles = SKNode()
         obstacles.name = "obstacles"
         
-        let randCol1 = Int(CGFloat.random(6))
-        let randCol2 = Int(CGFloat.random(6))
+        var randCol1 = Int(CGFloat.random(6))
+        var randCol2 = Int(CGFloat.random(6))
+        
+        repeat {
+            randCol1 = Int(CGFloat.random(6))
+            randCol2 = Int(CGFloat.random(6))
+        } while (randCol1 == currCarColour || randCol2 == currCarColour)
         
         let car1 = SKSpriteNode(imageNamed: "Car\(randCol1)")
         let car2 = SKSpriteNode(imageNamed: "Car\(randCol2)")
