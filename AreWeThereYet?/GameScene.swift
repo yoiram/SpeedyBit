@@ -29,7 +29,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameStarted = false
     var crashed = false
     var score:CGFloat = 0
-    let scoreBar = SKSpriteNode()
+    var scoreBar = SKSpriteNode()
     let scoreLabel = SKLabelNode()
     let scoreLabelGO = SKLabelNode()
     let highScoreLabel = SKLabelNode()
@@ -37,7 +37,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let tapToStartLabel = SKLabelNode(text: "Tap to Start")
     let tapToMoveLabel = SKLabelNode(text: "Tap on either side to move")
-    
     
     let defaults = NSUserDefaults.standardUserDefaults()
     var bgSpeed:CGFloat = 0
@@ -69,16 +68,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             background.size = self.frame.size
             self.addChild(background)
         }
-        
+
         //init score display
-        scoreBar.size = CGSizeMake(self.frame.size.width, 30)
-        scoreBar.color = SKColor.grayColor()
+        scoreBar.size = CGSizeMake(self.frame.size.width - lanes.firstLane/2, 30)
+        scoreBar.color = UIColor.init(hue: 0, saturation: 0, brightness: 0.54, alpha: 0.5)
         scoreBar.position = CGPointMake(self.frame.size.width/2, self.frame.size.height - 15)
         self.addChild(scoreBar)
         scoreBar.zPosition = 10
         
         scoreLabel.fontSize = 20
-        scoreLabel.fontName = "Verdana-Bold"
+        scoreLabel.fontName = "MarkerFelt-Thin"
         scoreLabel.fontColor = UIColor.blackColor()
         scoreLabel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height - 20)
         scoreLabel.text = "Score: 0"
@@ -88,9 +87,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //init car
         currCarColour = Int(CGFloat.random(6))
         car = SKSpriteNode(imageNamed: "Car\(currCarColour)")
-        car.size = CGSizeMake(80, 80)
+        //car.size = CGSizeMake(80, 80)
+        car.size = CGSizeMake(self.frame.width/3 - lanes.firstLane/2 - 10, self.frame.width/3 - lanes.firstLane/2 - 10)
         car.position = CGPointMake(lanes.secondLane, car.size.height/2 + 20)
-        car.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 53, height: 80))
+        car.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car.size.width*0.67, height: car.size.height))
         car.physicsBody?.affectedByGravity = false
         car.physicsBody?.categoryBitMask = carCategory
         car.physicsBody?.collisionBitMask = obstacleCategory
@@ -129,9 +129,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if !gameStarted && !crashed {
             gameStarted = true
             tapToStartLabel.runAction(SKAction.sequence([SKAction.scaleTo(0, duration: 0.5),SKAction.removeFromParent()]))
-            
             tapToMoveLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 - 40)
-            tapToMoveLabel.fontSize = 32
+            tapToMoveLabel.fontSize = 28
             tapToMoveLabel.fontName = "MarkerFelt-Thin"
             tapToMoveLabel.setScale(0)
             tapToMoveLabel.fontColor = UIColor.whiteColor()
@@ -139,7 +138,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let scaleUp = SKAction.scaleTo(1.0, duration: 0.5)
             let scaleDown = SKAction.scaleTo(0.9, duration: 0.5)
             let seq = SKAction.sequence([scaleUp, scaleDown])
-            tapToMoveLabel.runAction(SKAction.sequence([SKAction.waitForDuration(0.6),SKAction.repeatAction(seq, count: 3), SKAction.scaleTo(0, duration: 0.5),SKAction.removeFromParent()]))
+            tapToMoveLabel.runAction(SKAction.sequence([SKAction.waitForDuration(0.6),SKAction.repeatAction(seq, count: 2), scaleUp, SKAction.scaleTo(0, duration: 0.8),SKAction.removeFromParent()]))
             spawn()
         }
         else if crashed {
@@ -168,18 +167,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let touch = touches.first
             let touchLocation = touch!.locationInNode(self)
             
-            let differenceBetweenLanes = lanes.secondLane - lanes.firstLane
-            let moveRight = SKAction.moveByX(differenceBetweenLanes, y: 0, duration: 0.1)
-            let moveLeft = moveRight.reversedAction()
             let turnLeft = SKAction.rotateByAngle(CGFloat(M_PI/12), duration: 0.05)
             let turnRight = turnLeft.reversedAction()
-            let leftSeq = SKAction.sequence([turnLeft,moveLeft,turnRight])
-            let rightSeq = SKAction.sequence([turnRight,moveRight,turnLeft])
+            let reset = SKAction.rotateToAngle(0, duration: 0.05)
             
-            if touchLocation.x <= car.position.x && touchLocation.x > 0 && car.position.x - differenceBetweenLanes > 0 {
-                car.runAction(leftSeq)
-            } else if touchLocation.x >= car.position.x && touchLocation.x < self.frame.width && car.position.x + differenceBetweenLanes < self.frame.width {
-                car.runAction(rightSeq)
+            if touchLocation.x <= car.position.x && touchLocation.x > 0 {// && car.position.x - differenceBetweenLanes > 0 {
+                var moveLeft = SKAction()
+                if car.position.x > self.frame.width/3 {
+                    if car.position.x > ((self.frame.width/3) * 2) {
+                        moveLeft = SKAction.moveToX(lanes.secondLane, duration: 0.1)
+                        
+                    } else {
+                        moveLeft = SKAction.moveToX(lanes.firstLane, duration: 0.1)
+                    }
+                    let leftSeq = SKAction.sequence([turnLeft,moveLeft,reset])
+                    car.runAction(leftSeq)
+                }
+                
+            } else if touchLocation.x >= car.position.x && touchLocation.x < self.frame.width { //&& car.position.x + differenceBetweenLanes < self.frame.width {
+                var moveRight = SKAction()
+                if car.position.x < self.frame.width/3 * 2 {
+                    if car.position.x < self.frame.width/3 {
+                        moveRight = SKAction.moveToX(lanes.secondLane, duration: 0.1)
+                    } else {
+                        moveRight = SKAction.moveToX(lanes.thirdLane, duration: 0.1)
+                    }
+                    let rightSeq = SKAction.sequence([turnRight,moveRight,reset])
+                    car.runAction(rightSeq)
+                }
             }
         }
     }
@@ -208,17 +223,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             defaults.setValue(Int(score), forKey: scoreKey.highScore)
         }
         
-        gameOverView = SKSpriteNode(color: UIColor.grayColor(), size: CGSize(width: self.frame.width/2 + self.frame.width/3, height: self.frame.height/3))
+        gameOverView = SKSpriteNode(color: UIColor.init(hue: 0, saturation: 0, brightness: 0.54, alpha: 0.5), size: CGSize(width: self.frame.width - lanes.firstLane/2, height: self.frame.height/3))
         gameOverView.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
         
         scoreLabelGO.fontSize = 21
-        scoreLabelGO.fontName = "Verdana-Bold"
+        scoreLabelGO.fontName = "MarkerFelt-Thin"
         scoreLabelGO.position = CGPointMake(gameOverView.position.x, gameOverView.position.y + 30)
         scoreLabelGO.fontColor = UIColor.blackColor()
         scoreLabelGO.text = "Current score: \(Int(score))"
 
         highScoreLabel.fontSize = 21
-        highScoreLabel.fontName = "Verdana-Bold"
+        highScoreLabel.fontName = "MarkerFelt-Thin"
         highScoreLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - 30)
         highScoreLabel.fontColor = UIColor.blackColor()
         highScoreLabel.text = "Highest: \(defaults.integerForKey(scoreKey.highScore))"
@@ -247,16 +262,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mileStoneLabel.setScale(0)
         mileStoneLabel.fontColor = UIColor.redColor()
         mileStoneLabel.zPosition = 20
-        let scaleUp = SKAction.scaleTo(1.0, duration: 0.3)
-        let rotateRight = SKAction.rotateByAngle(CGFloat(M_PI/12), duration: 0.1)
-        let rotateLeft = rotateRight.reversedAction()
-        let rotate = SKAction.rotateByAngle(CGFloat(2*M_PI), duration: 1.0)
-        let scaleDown = SKAction.scaleTo(0, duration: 0.5)
-        let remove = SKAction.removeFromParent()
-        
-        let seq = SKAction.sequence([scaleUp, rotateRight, rotateLeft, rotateLeft, rotateRight, rotate, rotate, scaleDown, remove])
+//        let scaleUp = SKAction.scaleTo(1.0, duration: 0.3)
+//        let rotateRight = SKAction.rotateByAngle(CGFloat(M_PI/12), duration: 0.1)
+//        let rotateLeft = rotateRight.reversedAction()
+//        let rotate = SKAction.rotateByAngle(CGFloat(2*M_PI), duration: 1.0)
+//        let scaleDown = SKAction.scaleTo(0, duration: 0.5)
+//        let remove = SKAction.removeFromParent()
+//        
+//        let seq = SKAction.sequence([scaleUp, rotateRight, rotateLeft, rotateLeft, rotateRight, rotate, rotate, scaleDown, remove])
         self.addChild(mileStoneLabel)
-        mileStoneLabel.runAction(seq)
+        //mileStoneLabel.runAction(seq)
+        let scaleUp = SKAction.scaleTo(1.0, duration: 0.5)
+        let scaleDown = SKAction.scaleTo(0.6, duration: 0.5)
+        let seq = SKAction.sequence([scaleUp, scaleDown])
+        mileStoneLabel.runAction(SKAction.sequence([SKAction.waitForDuration(0.6),SKAction.repeatAction(seq, count: 2), scaleUp, SKAction.scaleTo(0, duration: 0.8),SKAction.removeFromParent()]))
     }
     
     func createObstacles() {
@@ -290,10 +309,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case 2: car1.position = CGPoint(x: lanes.thirdLane, y: self.frame.height + 25)
             default: break
             }
-            car1.size = CGSizeMake(80, 80)
-            car1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 53, height: 80))
+            car1.size = CGSizeMake(self.frame.width/3 - lanes.firstLane/2 - 10, self.frame.width/3 - lanes.firstLane/2 - 10)
+            car1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car1.size.width*0.67, height: car1.size.height))
             car1.physicsBody?.affectedByGravity = false
-            car1.physicsBody?.dynamic = false
             car1.physicsBody?.categoryBitMask = obstacleCategory
             car1.physicsBody?.collisionBitMask = carCategory
             car1.physicsBody?.contactTestBitMask = carCategory
@@ -305,10 +323,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case 2: car1.position = CGPoint(x: lanes.thirdLane, y: self.frame.height + 25)
             default: break
             }
-            car1.size = CGSizeMake(80, 80)
-            car1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 53, height: 80))
+            car1.size = CGSizeMake(self.frame.width/3 - lanes.firstLane/2 - 10, self.frame.width/3 - lanes.firstLane/2 - 10)
+            car1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car1.size.width*0.67, height: car1.size.height))
             car1.physicsBody?.affectedByGravity = false
-            car1.physicsBody?.dynamic = false
             car1.physicsBody?.categoryBitMask = obstacleCategory
             car1.physicsBody?.collisionBitMask = carCategory
             car1.physicsBody?.contactTestBitMask = carCategory
@@ -318,10 +335,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case 2: car2.position = CGPoint(x: lanes.thirdLane, y: self.frame.height + 25)
             default: break
             }
-            car2.size = CGSizeMake(80, 80)
-            car2.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 53, height: 80))
+            car2.size = CGSizeMake(self.frame.width/3 - lanes.firstLane/2 - 10, self.frame.width/3 - lanes.firstLane/2 - 10)
+            car2.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car2.size.width*0.67, height: car2.size.height))
             car2.physicsBody?.affectedByGravity = false
-            car2.physicsBody?.dynamic = false
             car2.physicsBody?.categoryBitMask = obstacleCategory
             car2.physicsBody?.collisionBitMask = carCategory
             car2.physicsBody?.contactTestBitMask = carCategory
