@@ -19,10 +19,6 @@ struct lanes { //struct to store lane x positions
     static let thirdLane = UIScreen.mainScreen().bounds.width / 6 * 5
 }
 
-struct didTutorial { //struct for stored
-    static let bool = "didTutorial"
-}
-
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //init constants and variables
@@ -234,10 +230,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverView.runAction(SKAction.scaleTo(1.0, duration: 0.2))
         highScoreLabel.removeFromParent()
         self.addChild(highScoreLabel)
-        highScoreLabel.runAction(SKAction.scaleTo(1.0, duration: 0.6))
+        highScoreLabel.runAction(SKAction.scaleTo(1.0, duration: 0.2))
         scoreLabelGO.removeFromParent()
         self.addChild(scoreLabelGO)
-        scoreLabelGO.runAction(SKAction.scaleTo(1.0, duration: 0.6))
+        scoreLabelGO.runAction(SKAction.scaleTo(1.0, duration: 0.2))
     }
     
     func mileStone() {
