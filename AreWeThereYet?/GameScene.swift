@@ -22,6 +22,8 @@ struct lanes { //struct to store lane x positions
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //init constants and variables
+    
+    var viewController: GameViewController!
     var car = SKSpriteNode()
     var currCarColour = -1
     var obstacles = SKNode()
@@ -155,6 +157,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             score = 0
             delayBetweenObstacles = 2.0
             speedOfMovement = 0.008
+            bgSpeed = 0
             updated1000 = false
             updated5000 = false
             updated10000 = false
@@ -167,7 +170,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let touch = touches.first
             let touchLocation = touch!.locationInNode(self)
             
-            let turnLeft = SKAction.rotateByAngle(CGFloat(M_PI/12), duration: 0.05)
+            let turnLeft = SKAction.rotateByAngle(CGFloat(M_PI/12), duration: 0.0 )
             let turnRight = turnLeft.reversedAction()
             let reset = SKAction.rotateToAngle(0, duration: 0.05)
             
@@ -221,6 +224,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if defaults.integerForKey(scoreKey.highScore) < Int(score) {
             defaults.setValue(Int(score), forKey: scoreKey.highScore)
+            viewController.saveHighScoreToGC(Int(score))
         }
         
         gameOverView = SKSpriteNode(color: UIColor.init(hue: 0, saturation: 0, brightness: 0.54, alpha: 0.5), size: CGSize(width: self.frame.width - lanes.firstLane/2, height: self.frame.height/3))
@@ -258,7 +262,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mileStoneLabel.text = "CHECKPOINT!"
         mileStoneLabel.fontSize = 40
         mileStoneLabel.fontName = "MarkerFelt-Thin"
-        mileStoneLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/5 * 4)
+        mileStoneLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/6 * 5)
         mileStoneLabel.setScale(0)
         mileStoneLabel.fontColor = UIColor.redColor()
         mileStoneLabel.zPosition = 20
@@ -457,6 +461,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreLabel.text = "Score: \(Int(score))"
         }
     }
+    
+    
+    
+    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

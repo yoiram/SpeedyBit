@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AC1863041CDF0FFB000D5B7B /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC1863031CDF0FFB000D5B7B /* iAd.framework */; };
+		AC3BEADD1CE150DC00D17E64 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC3BEADC1CE150DC00D17E64 /* GameKit.framework */; };
 		ACB7209A1CDBB662001213E2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB720991CDBB662001213E2 /* AppDelegate.swift */; };
 		ACB7209C1CDBB662001213E2 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = ACB7209B1CDBB662001213E2 /* GameScene.sks */; };
 		ACB7209E1CDBB662001213E2 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB7209D1CDBB662001213E2 /* GameScene.swift */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		AC1863031CDF0FFB000D5B7B /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		AC3BEADC1CE150DC00D17E64 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		ACB720961CDBB662001213E2 /* AreWeThereYet?.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AreWeThereYet?.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACB720991CDBB662001213E2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ACB7209B1CDBB662001213E2 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -36,6 +38,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC1863041CDF0FFB000D5B7B /* iAd.framework in Frameworks */,
+				AC3BEADD1CE150DC00D17E64 /* GameKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,6 +48,7 @@
 		ACB7208D1CDBB662001213E2 = {
 			isa = PBXGroup;
 			children = (
+				AC3BEADC1CE150DC00D17E64 /* GameKit.framework */,
 				AC1863031CDF0FFB000D5B7B /* iAd.framework */,
 				ACB720981CDBB662001213E2 /* AreWeThereYet? */,
 				ACB720971CDBB662001213E2 /* Products */,
@@ -107,6 +111,11 @@
 					ACB720951CDBB662001213E2 = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = U9ZZGMBJ4A;
+						SystemCapabilities = {
+							com.apple.GameCenter = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
