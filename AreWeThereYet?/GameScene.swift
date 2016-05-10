@@ -7,7 +7,6 @@
 //
 
 import SpriteKit
-import GameKit
 
 struct scoreKey { //struct for stored values
     static let highScore = "highScore"
