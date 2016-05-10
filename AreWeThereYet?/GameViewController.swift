@@ -1,6 +1,6 @@
 //
 //  GameViewController.swift
-//  AreWeThereYet?
+//  SpeedyBit
 //
 //  Created by Mario Youssef on 2016-05-05.
 //  Copyright (c) 2016 Mario Youssef. All rights reserved.
