@@ -22,7 +22,6 @@ struct lanes { //struct to store lane x positions
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //init constants and variables
-    
     var viewController: GameViewController!
     var car = SKSpriteNode()
     var currCarColour = -1

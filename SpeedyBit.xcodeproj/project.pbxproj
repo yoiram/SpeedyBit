@@ -21,7 +21,7 @@
 /* Begin PBXFileReference section */
 		AC1863031CDF0FFB000D5B7B /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		AC3BEADC1CE150DC00D17E64 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
-		ACB720961CDBB662001213E2 /* AreWeThereYet?.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AreWeThereYet?.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ACB720961CDBB662001213E2 /* SpeedyBit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpeedyBit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACB720991CDBB662001213E2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ACB7209B1CDBB662001213E2 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		ACB7209D1CDBB662001213E2 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -58,7 +58,7 @@
 		ACB720971CDBB662001213E2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				ACB720961CDBB662001213E2 /* AreWeThereYet?.app */,
+				ACB720961CDBB662001213E2 /* SpeedyBit.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -81,9 +81,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		ACB720951CDBB662001213E2 /* AreWeThereYet? */ = {
+		ACB720951CDBB662001213E2 /* SpeedyBit */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = ACB720AC1CDBB662001213E2 /* Build configuration list for PBXNativeTarget "AreWeThereYet?" */;
+			buildConfigurationList = ACB720AC1CDBB662001213E2 /* Build configuration list for PBXNativeTarget "SpeedyBit" */;
 			buildPhases = (
 				ACB720921CDBB662001213E2 /* Sources */,
 				ACB720931CDBB662001213E2 /* Frameworks */,
@@ -93,9 +93,9 @@
 			);
 			dependencies = (
 			);
-			name = "AreWeThereYet?";
+			name = SpeedyBit;
 			productName = "AreWeThereYet?";
-			productReference = ACB720961CDBB662001213E2 /* AreWeThereYet?.app */;
+			productReference = ACB720961CDBB662001213E2 /* SpeedyBit.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -119,7 +119,7 @@
 					};
 				};
 			};
-			buildConfigurationList = ACB720911CDBB662001213E2 /* Build configuration list for PBXProject "AreWeThereYet?" */;
+			buildConfigurationList = ACB720911CDBB662001213E2 /* Build configuration list for PBXProject "SpeedyBit" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -132,7 +132,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				ACB720951CDBB662001213E2 /* AreWeThereYet? */,
+				ACB720951CDBB662001213E2 /* SpeedyBit */,
 			);
 		};
 /* End PBXProject section */
@@ -278,7 +278,7 @@
 				INFOPLIST_FILE = "AreWeThereYet?/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yoiram.AreWeThereYet;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = SpeedyBit;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -293,7 +293,7 @@
 				INFOPLIST_FILE = "AreWeThereYet?/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yoiram.AreWeThereYet;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = SpeedyBit;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -302,7 +302,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		ACB720911CDBB662001213E2 /* Build configuration list for PBXProject "AreWeThereYet?" */ = {
+		ACB720911CDBB662001213E2 /* Build configuration list for PBXProject "SpeedyBit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				ACB720AA1CDBB662001213E2 /* Debug */,
@@ -311,7 +311,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		ACB720AC1CDBB662001213E2 /* Build configuration list for PBXNativeTarget "AreWeThereYet?" */ = {
+		ACB720AC1CDBB662001213E2 /* Build configuration list for PBXNativeTarget "SpeedyBit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				ACB720AD1CDBB662001213E2 /* Debug */,
