@@ -18,6 +18,14 @@ struct lanes { //struct to store lane x positions
     static let thirdLane = UIScreen.mainScreen().bounds.width / 6 * 5
 }
 
+struct gameOverMessages { //struct containing different messages
+    static let zero = "Oh no!"
+    static let one = "Smooth..."
+    static let two = "You crashed!"
+    static let three = "Try again!"
+    static let four = "Wow."
+}
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //init constants and variables
@@ -34,6 +42,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let scoreLabelGO = SKLabelNode()
     let highScoreLabel = SKLabelNode()
     var mileStoneLabel = SKLabelNode()
+    var youCrashedLabel = SKLabelNode()
+    var tryAgainLabel = SKLabelNode()
+    var gameOverNode = SKNode()
     
     let tapToStartLabel = SKLabelNode(text: "Tap to Start")
     let tapToMoveLabel = SKLabelNode(text: "Tap on either side to move")
@@ -70,15 +81,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         //init score display
-        scoreBar.size = CGSizeMake(self.frame.size.width - lanes.firstLane/2, 30)
-        scoreBar.color = UIColor.init(hue: 0, saturation: 0, brightness: 0.54, alpha: 0.5)
+        scoreBar.size = CGSizeMake(self.frame.size.width - lanes.firstLane/2 + 2, 30)
+        scoreBar.color = UIColor.init(hue: 0, saturation: 0, brightness: 0.40, alpha: 0.75)
         scoreBar.position = CGPointMake(self.frame.size.width/2, self.frame.size.height - 15)
         self.addChild(scoreBar)
         scoreBar.zPosition = 10
         
-        scoreLabel.fontSize = 20
-        scoreLabel.fontName = "MarkerFelt-Thin"
-        scoreLabel.fontColor = UIColor.blackColor()
+        scoreLabel.fontSize = 13
+        scoreLabel.fontName = "PressStart2P-Regular"
+        scoreLabel.fontColor = UIColor.whiteColor()
         scoreLabel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height - 20)
         scoreLabel.text = "Score: 0"
         self.addChild(scoreLabel)
@@ -87,7 +98,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //init car
         currCarColour = Int(CGFloat.random(6))
         car = SKSpriteNode(imageNamed: "Car\(currCarColour)")
-        //car.size = CGSizeMake(80, 80)
         car.size = CGSizeMake(self.frame.width/3 - lanes.firstLane/2 - 10, self.frame.width/3 - lanes.firstLane/2 - 10)
         car.position = CGPointMake(lanes.secondLane, car.size.height/2 + 20)
         car.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car.size.width*0.67, height: car.size.height))
@@ -98,8 +108,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(car)
         
         tapToStartLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 - 40)
-        tapToStartLabel.fontSize = 40
-        tapToStartLabel.fontName = "MarkerFelt-Thin"
+        tapToStartLabel.fontSize = 25
+        tapToStartLabel.fontName = "PressStart2P-Regular"
         tapToStartLabel.setScale(0)
         tapToStartLabel.fontColor = UIColor.whiteColor()
         self.addChild(tapToStartLabel)
@@ -130,8 +140,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             gameStarted = true
             tapToStartLabel.runAction(SKAction.sequence([SKAction.scaleTo(0, duration: 0.5),SKAction.removeFromParent()]))
             tapToMoveLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 - 40)
-            tapToMoveLabel.fontSize = 28
-            tapToMoveLabel.fontName = "MarkerFelt-Thin"
+            tapToMoveLabel.fontSize = 11
+            tapToMoveLabel.fontName = "PressStart2P-Regular"
             tapToMoveLabel.setScale(0)
             tapToMoveLabel.fontColor = UIColor.whiteColor()
             self.addChild(tapToMoveLabel)
@@ -220,64 +230,90 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameStarted = false
         crashed = true
         
+        gameOverNode = SKNode()
+        
         if defaults.integerForKey(scoreKey.highScore) < Int(score) {
             defaults.setValue(Int(score), forKey: scoreKey.highScore)
             viewController.saveHighScoreToGC(Int(score))
         }
         
-        gameOverView = SKSpriteNode(color: UIColor.init(hue: 0, saturation: 0, brightness: 0.54, alpha: 0.5), size: CGSize(width: self.frame.width - lanes.firstLane/2, height: self.frame.height/3))
+        gameOverView = SKSpriteNode(color: UIColor.init(hue: 0, saturation: 0, brightness: 0.40, alpha: 0.75), size: CGSize(width: self.frame.width - lanes.firstLane/2 + 2, height: self.frame.height/3))
         gameOverView.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
         
-        scoreLabelGO.fontSize = 21
-        scoreLabelGO.fontName = "MarkerFelt-Thin"
-        scoreLabelGO.position = CGPointMake(gameOverView.position.x, gameOverView.position.y + 30)
-        scoreLabelGO.fontColor = UIColor.blackColor()
+        
+        youCrashedLabel.fontSize = 18
+        youCrashedLabel.fontName = "PressStart2P-Regular"
+        youCrashedLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - gameOverView.frame.height/2 + gameOverView.frame.height/5 * 4)
+        youCrashedLabel.fontColor = UIColor.whiteColor()
+        
+        var youCrashedText = "That was fun!"
+        let randomMessageNum = CGFloat.random(6)
+        
+        switch randomMessageNum {
+        case 0 : youCrashedText = gameOverMessages.zero
+        case 1 : youCrashedText = gameOverMessages.one
+        case 2 : youCrashedText = gameOverMessages.two
+        case 3 : youCrashedText = gameOverMessages.three
+        case 4 : youCrashedText = gameOverMessages.four
+        default : break
+        }
+        
+        youCrashedLabel.text = (youCrashedText)
+        
+        scoreLabelGO.fontSize = 13
+        scoreLabelGO.fontName = "PressStart2P-Regular"
+        scoreLabelGO.position = CGPointMake(gameOverView.position.x, gameOverView.position.y)
+        scoreLabelGO.fontColor = UIColor.whiteColor()
         scoreLabelGO.text = "Current score: \(Int(score))"
-
-        highScoreLabel.fontSize = 21
-        highScoreLabel.fontName = "MarkerFelt-Thin"
-        highScoreLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - 30)
-        highScoreLabel.fontColor = UIColor.blackColor()
+        
+        highScoreLabel.fontSize = 13
+        highScoreLabel.fontName = "PressStart2P-Regular"
+        highScoreLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - gameOverView.frame.height/2 + gameOverView.frame.height/3)
+        highScoreLabel.fontColor = UIColor.whiteColor()
         highScoreLabel.text = "Highest: \(defaults.integerForKey(scoreKey.highScore))"
         
-        gameOverView.setScale(0)
-        highScoreLabel.setScale(0)
-        scoreLabelGO.setScale(0)
+        tryAgainLabel.fontSize = 11
+        tryAgainLabel.fontName = "PressStart2P-Regular"
+        tryAgainLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - gameOverView.frame.height/2 + gameOverView.frame.height/8)
+        tryAgainLabel.fontColor = UIColor.whiteColor()
+        tryAgainLabel.text = "Tap anywhere to try again"
         
-        gameOverView.removeFromParent()
-        self.addChild(gameOverView)
-        gameOverView.runAction(SKAction.scaleTo(1.0, duration: 0.2))
-        highScoreLabel.removeFromParent()
-        self.addChild(highScoreLabel)
-        highScoreLabel.runAction(SKAction.scaleTo(1.0, duration: 0.2))
-        scoreLabelGO.removeFromParent()
-        self.addChild(scoreLabelGO)
-        scoreLabelGO.runAction(SKAction.scaleTo(1.0, duration: 0.2))
+        gameOverNode.removeFromParent()
+        gameOverNode.setScale(0)
+        gameOverNode.addChild(gameOverView)
+        gameOverNode.addChild(highScoreLabel)
+        gameOverNode.addChild(scoreLabelGO)
+        gameOverNode.addChild(youCrashedLabel)
+        gameOverNode.addChild(tryAgainLabel)
+        gameOverNode.runAction(SKAction.scaleTo(1.0, duration: 0.2))
+        self.addChild(gameOverNode)
+        
     }
     
     func mileStone() {
         mileStoneLabel = SKLabelNode()
         mileStoneLabel.text = "CHECKPOINT!"
-        mileStoneLabel.fontSize = 40
-        mileStoneLabel.fontName = "MarkerFelt-Thin"
+        mileStoneLabel.fontSize = 25
+        mileStoneLabel.fontName = "PressStart2P-Regular"
         mileStoneLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/6 * 5)
         mileStoneLabel.setScale(0)
         mileStoneLabel.fontColor = UIColor.redColor()
         mileStoneLabel.zPosition = 20
-//        let scaleUp = SKAction.scaleTo(1.0, duration: 0.3)
-//        let rotateRight = SKAction.rotateByAngle(CGFloat(M_PI/12), duration: 0.1)
-//        let rotateLeft = rotateRight.reversedAction()
-//        let rotate = SKAction.rotateByAngle(CGFloat(2*M_PI), duration: 1.0)
-//        let scaleDown = SKAction.scaleTo(0, duration: 0.5)
-//        let remove = SKAction.removeFromParent()
-//        
-//        let seq = SKAction.sequence([scaleUp, rotateRight, rotateLeft, rotateLeft, rotateRight, rotate, rotate, scaleDown, remove])
         self.addChild(mileStoneLabel)
-        //mileStoneLabel.runAction(seq)
         let scaleUp = SKAction.scaleTo(1.0, duration: 0.5)
         let scaleDown = SKAction.scaleTo(0.6, duration: 0.5)
         let seq = SKAction.sequence([scaleUp, scaleDown])
-        mileStoneLabel.runAction(SKAction.sequence([SKAction.waitForDuration(0.6),SKAction.repeatAction(seq, count: 2), scaleUp, SKAction.scaleTo(0, duration: 0.8),SKAction.removeFromParent()]))
+        mileStoneLabel.runAction(SKAction.sequence([SKAction.repeatAction(seq, count: 1), scaleUp, SKAction.scaleTo(0, duration: 0.8),SKAction.removeFromParent()]))
+        mileStoneLabel = SKLabelNode()
+        mileStoneLabel.text = "Speeding up!"
+        mileStoneLabel.fontSize = 25
+        mileStoneLabel.fontName = "PressStart2P-Regular"
+        mileStoneLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/6 * 5)
+        mileStoneLabel.setScale(0)
+        mileStoneLabel.fontColor = UIColor.redColor()
+        mileStoneLabel.zPosition = 20
+        self.addChild(mileStoneLabel)
+        mileStoneLabel.runAction(SKAction.sequence([SKAction.waitForDuration(2.5),SKAction.repeatAction(seq, count: 1), scaleUp, SKAction.scaleTo(0, duration: 0.8),SKAction.removeFromParent()]))
     }
     
     func createObstacles() {
@@ -459,10 +495,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreLabel.text = "Score: \(Int(score))"
         }
     }
-    
-    
-    
-    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

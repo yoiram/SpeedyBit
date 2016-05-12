@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		AC1863041CDF0FFB000D5B7B /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC1863031CDF0FFB000D5B7B /* iAd.framework */; };
 		AC3BEADD1CE150DC00D17E64 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC3BEADC1CE150DC00D17E64 /* GameKit.framework */; };
+		AC61A4321CE4260E00DD9507 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = AC61A4301CE4260E00DD9507 /* OFL.txt */; };
+		AC61A4331CE4260E00DD9507 /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC61A4311CE4260E00DD9507 /* PressStart2P-Regular.ttf */; };
 		ACB7209A1CDBB662001213E2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB720991CDBB662001213E2 /* AppDelegate.swift */; };
 		ACB7209C1CDBB662001213E2 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = ACB7209B1CDBB662001213E2 /* GameScene.sks */; };
 		ACB7209E1CDBB662001213E2 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB7209D1CDBB662001213E2 /* GameScene.swift */; };
@@ -21,6 +23,8 @@
 /* Begin PBXFileReference section */
 		AC1863031CDF0FFB000D5B7B /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		AC3BEADC1CE150DC00D17E64 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		AC61A4301CE4260E00DD9507 /* OFL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
+		AC61A4311CE4260E00DD9507 /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
 		ACB720961CDBB662001213E2 /* SpeedyBit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpeedyBit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACB720991CDBB662001213E2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ACB7209B1CDBB662001213E2 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -66,6 +70,8 @@
 		ACB720981CDBB662001213E2 /* AreWeThereYet? */ = {
 			isa = PBXGroup;
 			children = (
+				AC61A4301CE4260E00DD9507 /* OFL.txt */,
+				AC61A4311CE4260E00DD9507 /* PressStart2P-Regular.ttf */,
 				ACB720991CDBB662001213E2 /* AppDelegate.swift */,
 				ACB7209B1CDBB662001213E2 /* GameScene.sks */,
 				ACB7209D1CDBB662001213E2 /* GameScene.swift */,
@@ -142,6 +148,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC61A4331CE4260E00DD9507 /* PressStart2P-Regular.ttf in Resources */,
+				AC61A4321CE4260E00DD9507 /* OFL.txt in Resources */,
 				ACB7209C1CDBB662001213E2 /* GameScene.sks in Resources */,
 				ACB720A81CDBB662001213E2 /* LaunchScreen.storyboard in Resources */,
 				ACB720A51CDBB662001213E2 /* Assets.xcassets in Resources */,
