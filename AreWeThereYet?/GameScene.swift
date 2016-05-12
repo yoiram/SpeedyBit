@@ -45,10 +45,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var youCrashedLabel = SKLabelNode()
     var tryAgainLabel = SKLabelNode()
     var gameOverNode = SKNode()
-    
+    var Logo = SKSpriteNode()
+    var textureArray = [SKTexture]()
     let tapToStartLabel = SKLabelNode(text: "Tap to Start")
-    let tapToMoveLabel = SKLabelNode(text: "Tap on either side to move")
-    
+    let tapToMoveLabel = SKLabelNode(text: "Tap to move")
     let defaults = NSUserDefaults.standardUserDefaults()
     var bgSpeed:CGFloat = 0
     let carCategory:UInt32 = 0x1 << 0
@@ -79,7 +79,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             background.size = self.frame.size
             self.addChild(background)
         }
-
+        
+        //init logo
+        for i in 0 ..< 6  {
+            let name = "Logo\(i)"
+            textureArray.append(SKTexture(imageNamed: name))
+        }
+        
+        Logo = SKSpriteNode(imageNamed: "Logo5")
+        Logo.size = CGSize(width: self.frame.width/4 * 3, height: self.frame.width/4 * 3 / 2)
+        Logo.position = CGPoint(x: self.frame.width/2, y: self.frame.height/5 * 4)
+        self.addChild(Logo)
+        Logo.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(textureArray, timePerFrame: 0.2)))
+        
         //init score display
         scoreBar.size = CGSizeMake(self.frame.size.width - lanes.firstLane/2 + 2, 30)
         scoreBar.color = UIColor.init(hue: 0, saturation: 0, brightness: 0.40, alpha: 0.75)
@@ -139,8 +151,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if !gameStarted && !crashed {
             gameStarted = true
             tapToStartLabel.runAction(SKAction.sequence([SKAction.scaleTo(0, duration: 0.5),SKAction.removeFromParent()]))
+            Logo.runAction(SKAction.sequence([SKAction.scaleTo(0, duration: 0.5),SKAction.removeFromParent()]))
             tapToMoveLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 - 40)
-            tapToMoveLabel.fontSize = 11
+            tapToMoveLabel.fontSize = 25
             tapToMoveLabel.fontName = "PressStart2P-Regular"
             tapToMoveLabel.setScale(0)
             tapToMoveLabel.fontColor = UIColor.whiteColor()
@@ -152,14 +165,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             spawn()
         }
         else if crashed {
-            let touch = touches.first
-            let touchLocation = touch!.locationInNode(self)
+//            let touch = touches.first
+//            let touchLocation = touch!.locationInNode(self)
             crashed = false
-            if gameOverView.containsPoint(touchLocation) {
-                gameOverView.removeFromParent()
-                highScoreLabel.removeFromParent()
-                scoreLabelGO.removeFromParent()
-            }
             self.removeAllChildren()
             self.removeAllActions()
             score = 0
@@ -287,7 +295,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverNode.addChild(tryAgainLabel)
         gameOverNode.runAction(SKAction.scaleTo(1.0, duration: 0.2))
         self.addChild(gameOverNode)
-        
     }
     
     func mileStone() {

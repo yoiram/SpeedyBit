@@ -46,7 +46,7 @@ class GameViewController: UIViewController, GKGameCenterControllerDelegate {
             if view != nil {
                 self.presentViewController(view!,animated: true, completion: nil)
             } else {
-                print(GKLocalPlayer.localPlayer().authenticated)
+                print("Local Player authenticated: \(GKLocalPlayer.localPlayer().authenticated)")
             }
         }
     }
