@@ -91,8 +91,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         Logo.position = CGPoint(x: self.frame.width/2, y: self.frame.height/5 * 4)
         self.addChild(Logo)
         Logo.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(textureArray, timePerFrame: 0.2)))
-        let scaleUp1 = SKAction.scaleTo(1.0, duration: 1.0)
-        let scaleDown1 = SKAction.scaleTo(0.9, duration: 1.0)
+        let scaleUp1 = SKAction.scaleTo(1.0, duration: 0.6)
+        let scaleDown1 = SKAction.scaleTo(0.9, duration: 0.6)
         let sequ = SKAction.sequence([scaleUp1, scaleDown1])
         Logo.runAction(SKAction.repeatActionForever(sequ))
         
