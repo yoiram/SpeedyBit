@@ -44,6 +44,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var mileStoneLabel = SKLabelNode()
     var youCrashedLabel = SKLabelNode()
     var tryAgainLabel = SKLabelNode()
+    var leaderboardButton = SKLabelNode()
     var gameOverNode = SKNode()
     var Logo = SKSpriteNode()
     var textureArray = [SKTexture]()
@@ -116,7 +117,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         car = SKSpriteNode(imageNamed: "Car\(currCarColour)")
         car.size = CGSizeMake(self.frame.width/3 - lanes.firstLane/2 - 10, self.frame.width/3 - lanes.firstLane/2 - 10)
         car.position = CGPointMake(lanes.secondLane, car.size.height/2 + 20)
-        car.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car.size.width*0.67, height: car.size.height))
+        car.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car.size.width*0.67, height: car.size.height - 1))
         car.physicsBody?.affectedByGravity = false
         car.physicsBody?.categoryBitMask = carCategory
         car.physicsBody?.collisionBitMask = obstacleCategory
@@ -143,7 +144,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let delay = SKAction.waitForDuration(delayBetweenObstacles)
         let spawnDelay = SKAction.sequence([spawn, delay])
         let spawnDelayForever = SKAction.repeatActionForever(spawnDelay)
-        let spawnAction = SKAction.sequence([SKAction.waitForDuration(delayBetweenObstacles+0.4), spawnDelayForever])
+        let spawnAction = SKAction.sequence([SKAction.waitForDuration(delayBetweenObstacles+1), spawnDelayForever])
         self.runAction(spawnAction)
         let distance = CGFloat(self.frame.height + obstacles.frame.height)
         let moveObstacles = SKAction.moveByX(0, y: -distance - 100, duration: NSTimeInterval(CGFloat(speedOfMovement) * distance))
@@ -169,22 +170,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             spawn()
         }
         else if crashed {
-//            let touch = touches.first
-//            let touchLocation = touch!.locationInNode(self)
-            crashed = false
-            self.removeAllChildren()
-            self.removeAllActions()
-            score = 0
-            delayBetweenObstacles = 2.0
-            speedOfMovement = 0.008
-            bgSpeed = 0
-            updated1000 = false
-            updated5000 = false
-            updated10000 = false
-            updated50000 = false
-            updated100000 = false
-            updated1000000 = false
-            createScene()
+            let touch = touches.first
+            let touchLocation = touch!.locationInNode(self)
+            if touchLocation.x <= self.frame.width/2 + leaderboardButton.frame.width/2 && touchLocation.x >= self.frame.width/2 - leaderboardButton.frame.width/2 && touchLocation.y <= leaderboardButton.position.y + leaderboardButton.frame.height && touchLocation.y >= leaderboardButton.position.y {
+                viewController.showLeaderboard()
+            } else {
+                crashed = false
+                self.removeAllChildren()
+                self.removeAllActions()
+                score = 0
+                delayBetweenObstacles = 2.0
+                speedOfMovement = 0.008
+                bgSpeed = 0
+                updated1000 = false
+                updated5000 = false
+                updated10000 = false
+                updated50000 = false
+                updated100000 = false
+                updated1000000 = false
+                createScene()
+            }
         }
         else {
             let touch = touches.first
@@ -226,7 +231,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let firstBody = contact.bodyA
         let secondBody = contact.bodyB
         
-        if firstBody.categoryBitMask == carCategory && secondBody.categoryBitMask == obstacleCategory || firstBody.categoryBitMask == obstacleCategory && secondBody.categoryBitMask == carCategory {
+        if firstBody.categoryBitMask == carCategory && secondBody.categoryBitMask == obstacleCategory || firstBody.categoryBitMask == obstacleCategory && secondBody.categoryBitMask == carCategory && !crashed {
             crashed = true
             self.removeAllActions()
             enumerateChildNodesWithName("obstacles", usingBlock: ({
@@ -258,7 +263,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         youCrashedLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - gameOverView.frame.height/2 + gameOverView.frame.height/5 * 4)
         youCrashedLabel.fontColor = UIColor.whiteColor()
         
-        var youCrashedText = "That was fun!"
+        var youCrashedText = "That was fun."
         let randomMessageNum = CGFloat.random(6)
         
         switch randomMessageNum {
@@ -290,6 +295,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         tryAgainLabel.fontColor = UIColor.whiteColor()
         tryAgainLabel.text = "Tap anywhere to try again"
         
+        leaderboardButton.name = "button"
+        //leaderboardButton.position = CGPoint(x: gameOverView.position.x, y: gameOverView.position.y - (gameOverView.frame.height/3 * 2))
+        leaderboardButton.text = "Leaderboard"
+        leaderboardButton.fontSize = 18
+        leaderboardButton.fontName = "PressStart2P-Regular"
+        leaderboardButton.fontColor = UIColor.whiteColor()
+        leaderboardButton.position = CGPointMake(self.frame.width/2, gameOverView.position.y - (gameOverView.frame.height/3 * 2))
+
+        
         gameOverNode.removeFromParent()
         gameOverNode.setScale(0)
         gameOverNode.addChild(gameOverView)
@@ -297,8 +311,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverNode.addChild(scoreLabelGO)
         gameOverNode.addChild(youCrashedLabel)
         gameOverNode.addChild(tryAgainLabel)
+        gameOverNode.addChild(leaderboardButton)
         gameOverNode.runAction(SKAction.scaleTo(1.0, duration: 0.2))
         self.addChild(gameOverNode)
+        
+        //leaderboardButton.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: gameOverView.frame.width/3 * 2, height: gameOverView.frame.height/2), center: CGPoint(x: leaderboardButton.position.x + self.frame.width/2, y: leaderboardButton.position.y))
+//        leaderboardButton.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: gameOverView.frame.width/3 * 2, height: gameOverView.frame.height/2))
+//        leaderboardButton.physicsBody?.affectedByGravity = false
+//        leaderboardButton.physicsBody?.dynamic = false
+//        leaderboardButton.physicsBody?.pinned = true
     }
     
     func mileStone() {
@@ -359,7 +380,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             default: break
             }
             car1.size = CGSizeMake(self.frame.width/3 - lanes.firstLane/2 - 10, self.frame.width/3 - lanes.firstLane/2 - 10)
-            car1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car1.size.width*0.67, height: car1.size.height))
+            car1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car1.size.width*0.67, height: car1.size.height - 1))
             car1.physicsBody?.affectedByGravity = false
             car1.physicsBody?.categoryBitMask = obstacleCategory
             car1.physicsBody?.collisionBitMask = carCategory
@@ -373,7 +394,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             default: break
             }
             car1.size = CGSizeMake(self.frame.width/3 - lanes.firstLane/2 - 10, self.frame.width/3 - lanes.firstLane/2 - 10)
-            car1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car1.size.width*0.67, height: car1.size.height))
+            car1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car1.size.width*0.67, height: car1.size.height - 1))
             car1.physicsBody?.affectedByGravity = false
             car1.physicsBody?.categoryBitMask = obstacleCategory
             car1.physicsBody?.collisionBitMask = carCategory
@@ -385,7 +406,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             default: break
             }
             car2.size = CGSizeMake(self.frame.width/3 - lanes.firstLane/2 - 10, self.frame.width/3 - lanes.firstLane/2 - 10)
-            car2.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car2.size.width*0.67, height: car2.size.height))
+            car2.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: car2.size.width*0.67, height: car2.size.height - 1))
             car2.physicsBody?.affectedByGravity = false
             car2.physicsBody?.categoryBitMask = obstacleCategory
             car2.physicsBody?.collisionBitMask = carCategory
