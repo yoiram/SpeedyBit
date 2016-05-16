@@ -174,7 +174,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let touchLocation = touch!.locationInNode(self)
             if touchLocation.x <= self.frame.width/2 + leaderboardButton.frame.width/2 && touchLocation.x >= self.frame.width/2 - leaderboardButton.frame.width/2 && touchLocation.y <= leaderboardButton.position.y + leaderboardButton.frame.height && touchLocation.y >= leaderboardButton.position.y {
                 viewController.showLeaderboard()
-            } else {
+            } else if touchLocation.x <= self.frame.width/2 + gameOverView.frame.width/2 && touchLocation.x >= self.frame.width/2 - gameOverView.frame.width/2 && touchLocation.y <= gameOverView.position.y + gameOverView.frame.height/2 && touchLocation.y >= gameOverView.position.y - gameOverView.frame.height/2 {
                 crashed = false
                 self.removeAllChildren()
                 self.removeAllActions()
@@ -293,7 +293,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         tryAgainLabel.fontName = "PressStart2P-Regular"
         tryAgainLabel.position = CGPointMake(gameOverView.position.x, gameOverView.position.y - gameOverView.frame.height/2 + gameOverView.frame.height/8)
         tryAgainLabel.fontColor = UIColor.whiteColor()
-        tryAgainLabel.text = "Tap anywhere to try again"
+        tryAgainLabel.text = "Tap here to try again"
         
         leaderboardButton.name = "button"
         //leaderboardButton.position = CGPoint(x: gameOverView.position.x, y: gameOverView.position.y - (gameOverView.frame.height/3 * 2))
@@ -426,10 +426,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if bgSpeed < 9.9 { //to allow slow start
                 bgSpeed += 0.1
             } else if score > 1000000 {
-                if bgSpeed < 49 {
-                    bgSpeed += 1
+                if bgSpeed < 34.9 {
+                    bgSpeed += 0.1
                 } else {
-                    bgSpeed = 50
+                    bgSpeed = 35
+                    if !updated1000000 {
+                        updated1000000 = true
+                        speedOfMovement = 0.0005
+                        delayBetweenObstacles = 0.2
+                        mileStone()
+                        spawn()
+                    }
+                }
+            } else if score > 500000 {
+                if bgSpeed < 29.9 {
+                    bgSpeed += 0.1
+                } else {
+                    bgSpeed = 30
                     if !updated1000000 {
                         updated1000000 = true
                         speedOfMovement = 0.0005
@@ -439,10 +452,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     }
                 }
             } else if score > 100000 {
-                if bgSpeed < 29.9 {
+                if bgSpeed < 27.4 {
                     bgSpeed += 0.1
                 } else {
-                    bgSpeed = 30
+                    bgSpeed = 27.5
                     if !updated100000 {
                         updated100000 = true
                         speedOfMovement = 0.001
@@ -487,7 +500,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         speedOfMovement = 0.004
                         delayBetweenObstacles = 1.2
                         mileStone()
-
                         spawn()
                     }
                 }
